@@ -1,6 +1,7 @@
 package com.elfwegos.dropezone.services;
 
 import com.elfwegos.dropezone.models.ExtensionRule;
+import com.elfwegos.dropezone.utils.LogTypes;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,8 @@ public class Directory {
     Path directoryPath;
     ArrayList<ExtensionRule> extensionRules;
     ExtensionManager extensionManager = ExtensionManager.getInstance();
+    LogsManager logsManager = LogsManager.getInstance();
+
     public Directory(String directoryPath){
         this.directoryPath = Paths.get(directoryPath);
         this.extensionRules = new ArrayList<>();
@@ -37,7 +40,7 @@ public class Directory {
                 File file = chemin.toFile();
 
                 if (!file.isFile()) {
-                    System.out.println("its a directory");
+                    logsManager.addLog(LogTypes.WARNING , "["+file.getName()+"] is a directory not a file");
                     return;
                 }
                 String fileName = file.getName();
@@ -54,15 +57,16 @@ public class Directory {
                             Path destination = Paths.get(directoryPath.toString() + "\\" + ext.getFolderName() + "\\" + fileName);
 
                             Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
+                            logsManager.addLog(LogTypes.SUCCESS,"["+fileName+"] have been moved to ["+ext.getFolderName()+"]");
 
                         } catch (IOException e) {
-                            System.out.println("le dossier " + ext.getFolderName() + " existe deja");
-                            System.out.println(e.getMessage());
+                            logsManager.addLog(LogTypes.ERROR,"error while moving the file");
                         }
                     }
                 }
             });
         }catch (IOException e) {
+            logsManager.addLog(LogTypes.ERROR,"error while reading the directory");
             throw new RuntimeException(e);
         }
     }
@@ -71,11 +75,13 @@ public class Directory {
 
         Path directoryPath = Paths.get(path);//TRANSFORMER LE String EN Path
         try{
-            Files.createDirectory(directoryPath);//Cree Le Dossier
+            if(Files.notExists(directoryPath)){
+                Files.createDirectory(directoryPath);//Cree Le Dossier
+                logsManager.addLog(LogTypes.SUCCESS,"creation of the directory "+name+" was successful");
+            }
         } catch (Exception e) {
-            System.out.println("ERROR WHILE CREATING THE FOLDER OR THE FOLDER IS ALREADY CREATED -> "+e.getMessage());
+            logsManager.addLog(LogTypes.ERROR,"creation of the directory "+name+" failed");
         }
-
     }
     public void init(){
         extensionRules = extensionManager.getExtensionRules();

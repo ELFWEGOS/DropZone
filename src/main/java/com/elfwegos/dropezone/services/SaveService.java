@@ -1,6 +1,7 @@
 package com.elfwegos.dropezone.services;
 
 import com.elfwegos.dropezone.models.ExtensionRule;
+import com.elfwegos.dropezone.utils.LogTypes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -32,6 +33,7 @@ public class SaveService {
 
     Gson gson;
     ExtensionManager extensionManager = ExtensionManager.getInstance();
+    LogsManager logsManager = LogsManager.getInstance();
 
     public void initSaveService() throws IOException {
         GsonBuilder builder = new GsonBuilder();
@@ -52,27 +54,53 @@ public class SaveService {
         }
     }
 
-    public void saveDirectoryFoldersNames() throws IOException {
+    public void saveDirectoryFoldersNames() {
         ArrayList<String> directoryNames = extensionManager.getDirectoryNames();
         String json = gson.toJson(directoryNames);
-        Files.writeString(directoryNamesPath,json);
+        try {
+            Files.writeString(directoryNamesPath,json);
+        } catch (IOException e) {
+            logsManager.addLog(LogTypes.ERROR,"failed to save folder names");
+            throw new RuntimeException(e);
+        }
+
+        logsManager.addLog(LogTypes.SUCCESS,"folder names have been saved");
     }
-    public void loadDirectoryFoldersNames() throws IOException {
-        String readFile = Files.readString(directoryNamesPath);
+    public void loadDirectoryFoldersNames() {
+        String readFile = null;
+        try {
+            readFile = Files.readString(directoryNamesPath);
+        } catch (IOException e) {
+            logsManager.addLog(LogTypes.ERROR,"failed to load folders names");
+            throw new RuntimeException(e);
+        }
         Type type = new TypeToken<ArrayList<String>>(){}.getType();
         ArrayList<String> directoryNames = gson.fromJson(readFile,type);
         if (directoryNames != null){
             extensionManager.setDirectoryNames(directoryNames);
         }
+        logsManager.addLog(LogTypes.SUCCESS,"folders names have been loaded");
     }
 
-    public void saveExtensions() throws IOException {
+    public void saveExtensions() {
         ArrayList<ExtensionRule> extensionRules = extensionManager.getExtensionRules();
             String json = gson.toJson(extensionRules);
+        try {
             Files.writeString(extensionsPath,json);
+        } catch (IOException e) {
+            logsManager.addLog(LogTypes.ERROR,"failed to save extensions");
+            throw new RuntimeException(e);
+        }
+        logsManager.addLog(LogTypes.SUCCESS,"extensions have been saved");
     }
-    public void loadExtensions() throws IOException {
-        String json = Files.readString(extensionsPath);
+    public void loadExtensions() {
+        String json = null;
+        try {
+            json = Files.readString(extensionsPath);
+        } catch (IOException e) {
+            logsManager.addLog(LogTypes.ERROR,"failed to load extensions");
+            throw new RuntimeException(e);
+        }
         Type type = new TypeToken<ArrayList<ExtensionRule>>(){}.getType();
         ArrayList<ExtensionRule> extensionRules = gson.fromJson(json,type);
         if (!extensionRules.isEmpty()){
@@ -82,6 +110,7 @@ public class SaveService {
             ExtensionRule lastExtensionRule = extensionRules.get(extensionRules.toArray().length-1);
             extensionManager.setExId(lastExtensionRule.getId()+1);
         }
+        logsManager.addLog(LogTypes.SUCCESS,"extensions have been loaded");
     }
 
     public void saveAll() throws IOException {

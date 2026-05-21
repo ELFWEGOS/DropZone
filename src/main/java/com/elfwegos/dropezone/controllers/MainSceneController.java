@@ -1,7 +1,10 @@
 package com.elfwegos.dropezone.controllers;
 
 import com.elfwegos.dropezone.App;
+import com.elfwegos.dropezone.models.Log;
 import com.elfwegos.dropezone.services.Directory;
+import com.elfwegos.dropezone.services.LogsManager;
+import com.elfwegos.dropezone.utils.LogTypes;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -25,11 +29,29 @@ public class MainSceneController {
     TextField pathTextField;
     @FXML
     Button pathButton;
+    @FXML
+    TextArea logsTextArea;
 
     Directory directory;
+    LogsManager logsManager = LogsManager.getInstance();
 
     @FXML
-    private void initialize() {}
+    private void initialize() {
+        logsManager.getLogsList().addListener((javafx.collections.ListChangeListener<Log>) change -> {
+            while (change.next()){
+                if (change.wasAdded()){
+                    for (Log log : change.getAddedSubList()){
+                        addLog(log.toString());
+                    }
+                    logsTextArea.setScrollTop(Double.MAX_VALUE);
+                    logsTextArea.setScrollLeft(Double.MAX_VALUE);
+                }
+            }
+        });
+        for (Log log : logsManager.getLogsList()) {
+            logsTextArea.appendText(log + "\n");
+        }
+    }
 
     public void manageFileBrowser(ActionEvent event){
         String directoryChooserTitle = "Directory to organise";
@@ -46,6 +68,9 @@ public class MainSceneController {
     public void organiseDirectory(ActionEvent event) throws IOException {
         directory.init();
         directory.organiseFolder();
+    }
+    public void addLog(String text){
+        logsTextArea.appendText("\n"+text);
     }
 
     public void switchToOptionMenu(ActionEvent event) throws IOException {

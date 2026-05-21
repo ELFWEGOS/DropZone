@@ -83,12 +83,7 @@ public class OptionMenuController {
 
             if (choiceBoxValue != null && !extensionTextFieldValue.isBlank()){
                 extensionManager.addExtension(choiceBoxValue,extensionTextFieldValue);
-                try {
-                    saveService.saveExtensions();
-                } catch (IOException e) {
-                    System.out.println("NOOON");
-                    throw new RuntimeException(e);
-                }
+                saveService.saveExtensions();
 
                 folderChoiceBox.setDisable(true);
                 extensionTextField.setDisable(true);
@@ -109,11 +104,7 @@ public class OptionMenuController {
             extensionManager.deleteExtension(extensionRule);
             extensionContainer.getChildren().remove(hBox);
             extensionManager.deleteExtensionHbox(hBox);
-            try {
-                saveService.saveExtensions();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            saveService.saveExtensions();
             if(addExtensionButton.isDisable()){
                 addExtensionButton.setDisable(false);
             }

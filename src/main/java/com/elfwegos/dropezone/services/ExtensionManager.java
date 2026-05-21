@@ -1,6 +1,7 @@
 package com.elfwegos.dropezone.services;
 
 import com.elfwegos.dropezone.models.ExtensionRule;
+import com.elfwegos.dropezone.utils.LogTypes;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -21,17 +22,21 @@ public class ExtensionManager {
     ArrayList<ExtensionRule> extensionRules = new ArrayList<>();
     ArrayList<HBox> extensionRulesHbox = new ArrayList<>();
     ArrayList<String> directoryNames = new ArrayList<>();
+    LogsManager logsManager = LogsManager.getInstance();
 
     public void addExtension(String folderName, String extension){
         ExtensionRule extensionRule = new ExtensionRule(exId,folderName,extension);
         extensionRules.add(extensionRule);
         exId++;
+        logsManager.addLog(LogTypes.SUCCESS,"the extension ["+extension+" -> "+folderName+"] has been added");
     }
     public void addExtensionHbox(HBox hBox){extensionRulesHbox.add(hBox);}
     public void addFolderName(String name){
         directoryNames.add(name);
+        logsManager.addLog(LogTypes.SUCCESS,"the directory ["+name+"] has been added");
     }
     public void deleteExtension(ExtensionRule extensionRule){
+        logsManager.addLog(LogTypes.SUCCESS,"the extension ["+extensionRule.getExtension()+" -> "+extensionRule.getFolderName()+"] has been deleted");
         extensionRules.remove(extensionRule);
     }
     public void deleteExtensionHbox(HBox hbox){
@@ -72,7 +77,6 @@ public class ExtensionManager {
             Button deleteButton = new Button("X");
             hBox.getChildren().addAll(idLabel,extensionNameTextField,folderChoiceBox,applyButton,deleteButton);
             extensionRulesHbox.add(hBox);
-            System.out.println("hbox added");
         }
     }
 
