@@ -28,6 +28,7 @@ public class SaveService {
     String elfwegosCorpo = "ELFWEGOS-APPS";
     String appName = "DropeZone";
     String appdata = System.getenv("APPDATA");
+    String logs ="";
 
     Path savePath = Paths.get(appdata,elfwegosCorpo,appName);
     Path directoryNamesPath = savePath.resolve("directoryNames.json");
@@ -119,12 +120,21 @@ public class SaveService {
         logsManager.addLog(LogTypes.SUCCESS,"extensions have been loaded");
     }
 
-    public void saveLogs(){
-        ObservableList<Log> logsList = logsManager.getLogsList();
-        String logs ="";
+    public void saveLogs() {
+        ArrayList<Log> logsList = new ArrayList<>(logsManager.getLogsList());
         for (Log log : logsList){
             logs = logs+"\n"+log.toString();
         }
+        String json = gson.toJson(logs);
+        try {
+            Files.writeString(logsPath,json);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void loadLogs() throws IOException {
+        String json = Files.readString(logsPath);
+        logs = gson.fromJson(json, String.class);
     }
 
     public void saveAll() throws IOException {
@@ -134,5 +144,6 @@ public class SaveService {
     public void loadAll() throws IOException {
         loadExtensions();
         loadDirectoryFoldersNames();
+        loadLogs();
     }
 }

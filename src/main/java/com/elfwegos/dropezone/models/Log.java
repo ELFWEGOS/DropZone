@@ -8,7 +8,6 @@ public class Log {
     int id;
     LogTypes logType;
     String text;
-    LocalDateTime localDateTime;
     String dateTime;
 
     //CONSTRUCTOR
@@ -16,7 +15,7 @@ public class Log {
         this.id = id;
         this.logType = logType;
         this.text = text;
-        localDateTime = LocalDateTime.now();
+        LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formateur = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss");
         dateTime = localDateTime.format(formateur);
     }
