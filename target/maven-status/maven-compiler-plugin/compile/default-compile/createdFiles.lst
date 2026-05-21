@@ -1,0 +1,4 @@
+com\elfwegos\dropezone\App.class
+com\elfwegos\dropezone\PrimaryController.class
+module-info.class
+com\elfwegos\dropezone\SecondaryController.class
