@@ -1,6 +1,7 @@
 package com.elfwegos.dropezone.services;
 
 import com.elfwegos.dropezone.models.ExtensionRule;
+import com.elfwegos.dropezone.models.Log;
 import com.elfwegos.dropezone.utils.LogTypes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -13,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import com.google.gson.GsonBuilder;
+import javafx.collections.ObservableList;
 
 
 public class SaveService {
@@ -30,6 +32,7 @@ public class SaveService {
     Path savePath = Paths.get(appdata,elfwegosCorpo,appName);
     Path directoryNamesPath = savePath.resolve("directoryNames.json");
     Path extensionsPath = savePath.resolve("extensions.json");
+    Path logsPath = savePath.resolve("logs.json");
 
     Gson gson;
     ExtensionManager extensionManager = ExtensionManager.getInstance();
@@ -51,6 +54,9 @@ public class SaveService {
         }
         if (Files.notExists(extensionsPath)){
             Files.createFile(extensionsPath);
+        }
+        if (Files.notExists(logsPath)){
+            Files.createFile(logsPath);
         }
     }
 
@@ -111,6 +117,14 @@ public class SaveService {
             extensionManager.setExId(lastExtensionRule.getId()+1);
         }
         logsManager.addLog(LogTypes.SUCCESS,"extensions have been loaded");
+    }
+
+    public void saveLogs(){
+        ObservableList<Log> logsList = logsManager.getLogsList();
+        String logs ="";
+        for (Log log : logsList){
+            logs = logs+"\n"+log.toString();
+        }
     }
 
     public void saveAll() throws IOException {
