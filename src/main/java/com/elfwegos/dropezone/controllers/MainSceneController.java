@@ -37,6 +37,7 @@ public class MainSceneController {
 
     @FXML
     private void initialize() {
+        logsTextArea.setEditable(false);
         logsManager.getLogsList().addListener((javafx.collections.ListChangeListener<Log>) change -> {
             while (change.next()){
                 if (change.wasAdded()){
@@ -44,10 +45,11 @@ public class MainSceneController {
                         addLog(log.toString());
                     }
                     logsTextArea.setScrollTop(Double.MAX_VALUE);
-                    logsTextArea.setScrollLeft(Double.MAX_VALUE);
+                    logsTextArea.setScrollLeft(Double.MIN_VALUE);
                 }
             }
         });
+        //DES LE LANCEMMENT DE LAPP
         for (Log log : logsManager.getLogsList()) {
             logsTextArea.appendText(log + "\n");
         }
@@ -60,7 +62,10 @@ public class MainSceneController {
 
         File choosenFile = directoryChooser.showDialog(new Stage());
         String absoluteDirectoryPath = choosenFile.getAbsolutePath();
-
+        if(absoluteDirectoryPath.isBlank()){
+            logsManager.addLog(LogTypes.ERROR,"Please choose a folder to organize");
+            return;
+        }
         pathTextField.setText(absoluteDirectoryPath);
 
         directory = new Directory(absoluteDirectoryPath);

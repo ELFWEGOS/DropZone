@@ -36,8 +36,8 @@ public class ExtensionManager {
         logsManager.addLog(LogTypes.SUCCESS,"the directory ["+name+"] has been added");
     }
     public void deleteExtension(ExtensionRule extensionRule){
-        logsManager.addLog(LogTypes.SUCCESS,"the extension ["+extensionRule.getExtension()+" -> "+extensionRule.getFolderName()+"] has been deleted");
         extensionRules.remove(extensionRule);
+        logsManager.addLog(LogTypes.SUCCESS,"the extension ["+extensionRule.getExtension()+" -> "+extensionRule.getFolderName()+"] has been deleted");
     }
     public void deleteExtensionHbox(HBox hbox){
         extensionRulesHbox.remove(hbox);
