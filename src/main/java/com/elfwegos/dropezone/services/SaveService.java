@@ -42,7 +42,7 @@ public class SaveService {
     LogsManager logsManager = LogsManager.getInstance();
     AppInfo appInfo = new AppInfo();
 
-    public void initSaveService() throws IOException {
+    public SaveService(){
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         this.gson = builder.create();
@@ -50,20 +50,21 @@ public class SaveService {
             if(Files.notExists(savePath)){
                 Files.createDirectories(savePath);
             }
+            if (Files.notExists(directoryNamesPath)){
+                Files.createFile(directoryNamesPath);
+            }
+            if (Files.notExists(extensionsPath)){
+                Files.createFile(extensionsPath);
+            }
+            if (Files.notExists(logsPath)){
+                Files.createFile(logsPath);
+            }
+            if (Files.notExists(app_infoPath)){
+                Files.createFile(app_infoPath);
+                saveVersion();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        if (Files.notExists(directoryNamesPath)){
-            Files.createFile(directoryNamesPath);
-        }
-        if (Files.notExists(extensionsPath)){
-            Files.createFile(extensionsPath);
-        }
-        if (Files.notExists(logsPath)){
-            Files.createFile(logsPath);
-        }
-        if (Files.notExists(app_infoPath)){
-            Files.createFile(app_infoPath);
         }
     }
 
@@ -149,6 +150,7 @@ public class SaveService {
         String json = gson.toJson(appInfo);
         try{
             Files.writeString(app_infoPath,json);
+            logsManager.addLog(LogTypes.SUCCESS,"VERSION SAVED");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -157,6 +159,7 @@ public class SaveService {
         try{
             String json = Files.readString(app_infoPath);
             AppInfo appInfo1 = gson.fromJson(json,AppInfo.class);
+            logsManager.addLog(LogTypes.SUCCESS,"VERSION LOADED");
             return appInfo1.getVersion();
         }catch (IOException ignored){}
         return null;

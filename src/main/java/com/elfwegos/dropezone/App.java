@@ -2,6 +2,7 @@ package com.elfwegos.dropezone;
 
 import com.elfwegos.dropezone.services.LogsManager;
 import com.elfwegos.dropezone.services.SaveService;
+import com.elfwegos.dropezone.services.UpdateService;
 import com.elfwegos.dropezone.utils.LogTypes;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -34,15 +35,18 @@ public class App extends Application {
             saveService.saveLogs();
         });
         stage.show();
+        UpdateService updateService = UpdateService.getInstance();
+        if (updateService.isThereAnUpdate()){
+            updateService.initUpdatePopup(stage);
+        }
     }
     public static void main(String[] args) throws IOException {
-        SaveService saveService = SaveService.getInstance();
         LogsManager logsManager = LogsManager.getInstance();
+        SaveService saveService = SaveService.getInstance();
         logsManager.addLog(LogTypes.INFO,"APP LAUNCHED");
-        saveService.initSaveService();
         saveService.loadAll();
-        launch();
 
+        launch();
     }
 
 }
