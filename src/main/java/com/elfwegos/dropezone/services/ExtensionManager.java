@@ -2,6 +2,8 @@ package com.elfwegos.dropezone.services;
 
 import com.elfwegos.dropezone.models.ExtensionRule;
 import com.elfwegos.dropezone.utils.LogTypes;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -21,7 +23,7 @@ public class ExtensionManager {
     int exId = 0;
     ArrayList<ExtensionRule> extensionRules = new ArrayList<>();
     ArrayList<HBox> extensionRulesHbox = new ArrayList<>();
-    ArrayList<String> directoryNames = new ArrayList<>();
+    ObservableList<String> directoryNames = FXCollections.observableArrayList();
     LogsManager logsManager = LogsManager.getInstance();
 
     public void addExtension(String folderName, String extension){
@@ -54,7 +56,8 @@ public class ExtensionManager {
         extensionNameTextField.setPromptText("PUT HERE THE EXTENSION EX: .exe");
         ChoiceBox<String> folderChoiceBox = new ChoiceBox<>();
         folderChoiceBox.getItems().addAll(directoryNames);
-        folderChoiceBox.setValue("TEST");
+        folderChoiceBox.setValue("CHOOSE A FOLDER");
+        folderChoiceBox.setMaxWidth(150);
         Button applyButton = new Button("APPLY");
         Button deleteButton = new Button("X");
 
@@ -79,7 +82,6 @@ public class ExtensionManager {
             extensionRulesHbox.add(hBox);
         }
     }
-
     //GETTERS & SETTERS
     public ArrayList<ExtensionRule> getExtensionRules() {
         return this.extensionRules;
@@ -89,10 +91,17 @@ public class ExtensionManager {
         return extensionRulesHbox;
     }
 
-    public ArrayList<String> getDirectoryNames() {return directoryNames;}
+    public ArrayList<String> getDirectoryNamesForSave() {
+        return new ArrayList<>(directoryNames);
+    }
+    public ObservableList<String> getDirectoryNamesForController(){
+        return directoryNames;
+    }
 
-
-    public void setDirectoryNames(ArrayList<String> directoryNames) {this.directoryNames = directoryNames;}
+    public void setDirectoryNames(ArrayList<String> directoryNames) {
+        this.directoryNames.removeAll();
+        this.directoryNames.addAll(directoryNames);
+    }
 
     public void setExtensionRules(ArrayList<ExtensionRule> extensionRules) {this.extensionRules = extensionRules;}
 

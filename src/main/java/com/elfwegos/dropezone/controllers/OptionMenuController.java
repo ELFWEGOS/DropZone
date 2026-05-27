@@ -34,29 +34,18 @@ public class OptionMenuController {
     ExtensionManager extensionManager = ExtensionManager.getInstance();
     SaveService saveService = SaveService.getInstance();
 
+    ChoiceBox<String> currentChoiceBox;
+
     @FXML
     private void initialize() {
-        ArrayList<HBox> createdExtensionHbox = extensionManager.getExtensionRulesHbox();
-
-        for (HBox hBox : createdExtensionHbox){
-            extensionContainer.getChildren().add(hBox);
-            Button applyButton = (Button) hBox.getChildren().get(3);
-            configureApplyButton(applyButton,hBox);
-            Button deleteButton = (Button) hBox.getChildren().get(4);
-            configureDeleteButton(deleteButton,hBox);
-            ChoiceBox folderChoiceBox = (ChoiceBox) hBox.getChildren().get(2);
-            TextField extensionTextField = (TextField) hBox.getChildren().get(1);
-            folderChoiceBox.setDisable(true);
-            extensionTextField.setDisable(true);
-            applyButton.setDisable(true);
-            addExtensionButton.setDisable(false);
-        }
-        System.out.println("Chargemment des 'Save'");
+        loadHBox();
+        configureFolderNamesListner();
     }
 
     public void addExtensionBc(ActionEvent event) throws IOException {
         addExtensionButton.setDisable(true);
         HBox hBox = extensionManager.getUiBc();
+        currentChoiceBox = (ChoiceBox) hBox.getChildren().get(2);
         Button applyButton = (Button) hBox.getChildren().get(3);
         configureApplyButton(applyButton,hBox);
         Button deleteButton = (Button) hBox.getChildren().get(4);
@@ -110,6 +99,38 @@ public class OptionMenuController {
             }
         });
     }
+
+    public void loadHBox(){
+        ArrayList<HBox> createdExtensionHbox = extensionManager.getExtensionRulesHbox();
+        for (HBox hBox : createdExtensionHbox){
+            extensionContainer.getChildren().add(hBox);
+            Button applyButton = (Button) hBox.getChildren().get(3);
+            configureApplyButton(applyButton,hBox);
+            Button deleteButton = (Button) hBox.getChildren().get(4);
+            configureDeleteButton(deleteButton,hBox);
+            ChoiceBox folderChoiceBox = (ChoiceBox) hBox.getChildren().get(2);
+            TextField extensionTextField = (TextField) hBox.getChildren().get(1);
+            folderChoiceBox.setDisable(true);
+            extensionTextField.setDisable(true);
+            applyButton.setDisable(true);
+            addExtensionButton.setDisable(false);
+        }
+    }
+    public void configureFolderNamesListner(){
+        extensionManager.getDirectoryNamesForController().addListener((javafx.collections.ListChangeListener<String>) change -> {
+            ArrayList<HBox> hBoxes = extensionManager.getExtensionRulesHbox();
+            while(change.next()){
+                if (change.wasAdded()){
+                    if (currentChoiceBox == null){return;}
+                    for(String folderName : change.getAddedSubList()){
+                        currentChoiceBox.getItems().add(folderName);
+                        System.out.println(currentChoiceBox.getItems());
+                    }
+                }
+            }
+        });
+    }
+
     public void switchToMainMenu(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/elfwegos/dropezone/MainSceneView.fxml"));
         Parent root = loader.load();

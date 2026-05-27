@@ -2,6 +2,7 @@ package com.elfwegos.dropezone.services;
 
 import com.elfwegos.dropezone.models.ExtensionRule;
 import com.elfwegos.dropezone.models.Log;
+import com.elfwegos.dropezone.utils.AppInfo;
 import com.elfwegos.dropezone.utils.LogTypes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,10 +35,12 @@ public class SaveService {
     Path directoryNamesPath = savePath.resolve("directoryNames.json");
     Path extensionsPath = savePath.resolve("extensions.json");
     Path logsPath = savePath.resolve("logs.json");
+    Path app_infoPath = savePath.resolve("app_info.json");
 
     Gson gson;
     ExtensionManager extensionManager = ExtensionManager.getInstance();
     LogsManager logsManager = LogsManager.getInstance();
+    AppInfo appInfo = new AppInfo();
 
     public void initSaveService() throws IOException {
         GsonBuilder builder = new GsonBuilder();
@@ -59,10 +62,13 @@ public class SaveService {
         if (Files.notExists(logsPath)){
             Files.createFile(logsPath);
         }
+        if (Files.notExists(app_infoPath)){
+            Files.createFile(app_infoPath);
+        }
     }
 
     public void saveDirectoryFoldersNames() {
-        ArrayList<String> directoryNames = extensionManager.getDirectoryNames();
+        ArrayList<String> directoryNames = extensionManager.getDirectoryNamesForSave();
         String json = gson.toJson(directoryNames);
         try {
             Files.writeString(directoryNamesPath,json);
@@ -110,6 +116,7 @@ public class SaveService {
         }
         Type type = new TypeToken<ArrayList<ExtensionRule>>(){}.getType();
         ArrayList<ExtensionRule> extensionRules = gson.fromJson(json,type);
+        if (extensionRules == null){return;}
         if (!extensionRules.isEmpty()){
             extensionManager.setExtensionRules(extensionRules);
             extensionManager.loadHBox();
@@ -135,6 +142,24 @@ public class SaveService {
     public void loadLogs() throws IOException {
         String json = Files.readString(logsPath);
         logs = gson.fromJson(json, String.class);
+    }
+
+    public void saveVersion(){
+
+        String json = gson.toJson(appInfo);
+        try{
+            Files.writeString(app_infoPath,json);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public String loadVersion(){
+        try{
+            String json = Files.readString(app_infoPath);
+            AppInfo appInfo1 = gson.fromJson(json,AppInfo.class);
+            return appInfo1.getVersion();
+        }catch (IOException ignored){}
+        return null;
     }
 
     public void saveAll() throws IOException {

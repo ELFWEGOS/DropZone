@@ -5,9 +5,6 @@ import com.elfwegos.dropezone.utils.LogTypes;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class LogsManager {
     static LogsManager instance;
     public static LogsManager getInstance(){
