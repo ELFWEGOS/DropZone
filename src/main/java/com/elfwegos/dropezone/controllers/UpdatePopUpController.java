@@ -3,6 +3,7 @@ package com.elfwegos.dropezone.controllers;
 import com.elfwegos.dropezone.App;
 import com.elfwegos.dropezone.services.UpdateService;
 import com.sun.tools.javac.Main;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -43,12 +44,14 @@ public class UpdatePopUpController {
                 .toURI()
                 .getPath();
         Path pathDeLancement = Paths.get(cheminDeLancement).getParent();
-        Path pathDeUpdater = pathDeLancement.resolve("updater.exe");
-        ProcessBuilder processBuilder = new ProcessBuilder(String.valueOf(pathDeUpdater));
+        Path pathDeUpdater = pathDeLancement.resolve("Updater.jar");
+        ProcessBuilder processBuilder = new ProcessBuilder("java","-jar",String.valueOf(pathDeUpdater));
         try{
             Process process = processBuilder.start();
         }catch (IOException ignored){}
         primaryStage.close();
+        Platform.exit();
+        System.exit(0);
     }
     public void onNoButtonClicked(ActionEvent event){
         Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();

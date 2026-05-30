@@ -85,10 +85,6 @@ public class UpdateService {
         });
     }
 
-    public void updateApp(){
-        //LANCER LE UPDATER ET FERMER DROPE ZONE
-    }
-
     public double getLocalVersion() {return localVersion;}
     public double getCloudVersion() {return cloudVersion;}
 }

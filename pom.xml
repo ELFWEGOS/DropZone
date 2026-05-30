@@ -12,10 +12,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>17</java.version>
-        <javafx.version>17.0.10</javafx.version>
+        <java.version>21</java.version>
+        <javafx.version>21.0.11</javafx.version>
     </properties>
-    
+
     <dependencies>
         <!-- JavaFX Controls -->
         <dependency>
@@ -60,7 +60,8 @@
 
     <build>
         <plugins>
-            <!-- Compiler plugin pour Java 17 -->
+
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -71,15 +72,39 @@
                 </configuration>
             </plugin>
 
-            <!-- Plugin JavaFX Maven -->
+            <!-- FIX MANIFEST (CRUCIAL) -->
             <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
                 <configuration>
-                    <mainClass>com.elfwegos.dropezone.App</mainClass>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.elfwegos.dropezone.App</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

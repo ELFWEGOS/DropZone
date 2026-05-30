@@ -27,7 +27,7 @@ public class SaveService {
     }
 
     String elfwegosCorpo = "ELFWEGOS-APPS";
-    String appName = "DropeZone";
+    String appName = "DropZone";
     String appdata = System.getenv("APPDATA");
     String logs ="";
 
