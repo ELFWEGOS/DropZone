@@ -34,6 +34,7 @@ public class UpdateService {
     public UpdateService(){
         setCloudVersion();
         isUpdated = !isThereAnUpdate();
+        System.out.println("LOCAL VERSION : "+localVersion);
         System.out.println("CLOUD VERSION : "+cloudVersion);
         System.out.println("IS UPDATED : "+isUpdated);
     }
