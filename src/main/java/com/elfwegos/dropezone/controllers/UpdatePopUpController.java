@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -38,14 +39,14 @@ public class UpdatePopUpController {
     public void onYesButtonClicked(ActionEvent event) throws URISyntaxException {
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Stage primaryStage = (Stage) stage.getOwner();
-        String cheminDeLancement = App.class.getProtectionDomain()
+        URI uri = App.class.getProtectionDomain()
                 .getCodeSource()
                 .getLocation()
-                .toURI()
-                .getPath();
-        Path pathDeLancement = Paths.get(cheminDeLancement).getParent();
+                .toURI();
+        Path pathDeLancement = Paths.get(uri).getParent();
         Path pathDeUpdater = pathDeLancement.resolve("Updater.jar");
-        ProcessBuilder processBuilder = new ProcessBuilder("java","-jar",String.valueOf(pathDeUpdater));
+        ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", ".startUpdater.bat");
+        processBuilder.directory(pathDeLancement.toFile());
         try{
             Process process = processBuilder.start();
         }catch (IOException ignored){}

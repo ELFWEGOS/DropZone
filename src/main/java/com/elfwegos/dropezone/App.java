@@ -21,6 +21,10 @@ public class App extends Application {
         LogsManager logsManager = LogsManager.getInstance();
 
         String title = "Drope Zone";
+        System.out.println("==========================");
+        System.out.println("         DROPZONE         ");
+        System.out.println("==========================");
+
         boolean isResizable = false;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainSceneView.fxml"));
         Parent root = loader.load();

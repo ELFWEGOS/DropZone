@@ -14,6 +14,8 @@ public class Directory {
     ArrayList<ExtensionRule> extensionRules;
     ExtensionManager extensionManager = ExtensionManager.getInstance();
     LogsManager logsManager = LogsManager.getInstance();
+    int numberOfMovedFiles = 0;
+    int numberOfErrors = 0;
 
     public Directory(String directoryPath){
         this.directoryPath = Paths.get(directoryPath);
@@ -58,14 +60,17 @@ public class Directory {
 
                             Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
                             logsManager.addLog(LogTypes.SUCCESS,"["+fileName+"] have been moved to ["+ext.getFolderName()+"]");
-
+                            numberOfMovedFiles++;
                         } catch (IOException e) {
-                            logsManager.addLog(LogTypes.ERROR,"error while moving the file");
+                            numberOfErrors++;
+                            logsManager.addLog(LogTypes.ERROR, "error while moving [" + fileName + "] : " + e.getMessage());
+                            e.printStackTrace();
                         }
                     }
                 }
             });
         }catch (IOException e) {
+            numberOfErrors++;
             logsManager.addLog(LogTypes.ERROR,"error while reading the directory");
             throw new RuntimeException(e);
         }
@@ -86,5 +91,8 @@ public class Directory {
     public void init(){
         extensionRules = extensionManager.getExtensionRules();
     }
-
+    public void showUI(){
+        logsManager.addLog(LogTypes.INFO,"("+numberOfMovedFiles+") HAVE BEEN MOVED");
+        logsManager.addLog(LogTypes.INFO,"("+numberOfErrors+") ERRORS");
+    }
 }
