@@ -44,8 +44,9 @@ public class UpdatePopUpController {
                 .getLocation()
                 .toURI();
         Path pathDeLancement = Paths.get(uri).getParent();
-        Path pathDeUpdater = pathDeLancement.resolve("Updater.jar");
-        ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", ".startUpdater.bat");
+
+        String batPath = pathDeLancement.resolve("startUpdater.bat").toString();
+        ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c",batPath );
         processBuilder.directory(pathDeLancement.toFile());
         try{
             Process process = processBuilder.start();
