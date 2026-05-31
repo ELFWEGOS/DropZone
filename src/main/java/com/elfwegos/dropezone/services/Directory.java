@@ -50,6 +50,7 @@ public class Directory {
                 String[] splitedFileName = fileName.split("\\.");
 
                 String fileExtension = "." + splitedFileName[splitedFileName.length-1];
+                fileExtension = fileExtension.toLowerCase();
 
                 for (ExtensionRule ext : this.extensionRules) {
                     if (ext.getExtension().equals(fileExtension)) {
@@ -74,6 +75,7 @@ public class Directory {
             logsManager.addLog(LogTypes.ERROR,"error while reading the directory");
             throw new RuntimeException(e);
         }
+        showUI();
     }
     public void createDossier(String name,String path) throws IOException {
         path += "\\"+name; //L'AJOUT DU SOUS DOSSIER AU PATH
