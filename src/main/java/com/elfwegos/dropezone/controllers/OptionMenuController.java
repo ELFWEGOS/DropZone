@@ -2,17 +2,16 @@ package com.elfwegos.dropezone.controllers;
 
 import com.elfwegos.dropezone.models.ExtensionRule;
 import com.elfwegos.dropezone.services.ExtensionManager;
+import com.elfwegos.dropezone.services.LogsManager;
 import com.elfwegos.dropezone.services.SaveService;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -25,16 +24,18 @@ public class OptionMenuController {
     @FXML
     private VBox extensionContainer;
     @FXML
-    Button addExtensionButton;
+    private Button addExtensionButton;
     @FXML
     private Button folderCreationSaveButton;
     @FXML
     private TextField folderCreationTextField;
+    @FXML
+    private ScrollPane scrollPane;
 
     ExtensionManager extensionManager = ExtensionManager.getInstance();
     SaveService saveService = SaveService.getInstance();
 
-    ChoiceBox<String> currentChoiceBox;
+    ChoiceBox currentChoiceBox;
 
     @FXML
     private void initialize() {
@@ -46,16 +47,19 @@ public class OptionMenuController {
         addExtensionButton.setDisable(true);
         HBox hBox = extensionManager.getUiBc();
         currentChoiceBox = (ChoiceBox) hBox.getChildren().get(2);
-        Button applyButton = (Button) hBox.getChildren().get(3);
-        configureApplyButton(applyButton,hBox);
         Button deleteButton = (Button) hBox.getChildren().get(4);
         configureDeleteButton(deleteButton,hBox);
+        Button applyButton = (Button) hBox.getChildren().get(3);
+        configureApplyButton(applyButton,hBox);
         extensionContainer.getChildren().add(hBox);
-
+        scrollPane.applyCss();
+        scrollPane.layout();
+        scrollPane.setVvalue(1.0);
     }
 
     public void saveFolderCreation(ActionEvent event) throws IOException {
         String folderName = folderCreationTextField.getText();
+        if (folderName.isBlank()){return;}
         extensionManager.addFolderName(folderName);
         folderCreationTextField.clear();
         saveService.saveDirectoryFoldersNames();
@@ -72,28 +76,24 @@ public class OptionMenuController {
 
             if (choiceBoxValue != null && !extensionTextFieldValue.isBlank()){
                 extensionManager.addExtension(choiceBoxValue,extensionTextFieldValue);
-                saveService.saveExtensions();
-
                 folderChoiceBox.setDisable(true);
                 extensionTextField.setDisable(true);
                 applyButton.setDisable(true);
                 addExtensionButton.setDisable(false);
-                System.out.println("all disable");
 
                 extensionManager.addExtensionHbox(hBox);
-            }else {
-                System.out.println("NON");
             }
         });
     }
     public void configureDeleteButton(Button deleteButton , HBox hBox){
         deleteButton.setOnMouseClicked(event -> {
-            int exId =  Integer.parseInt(((Label) hBox.getChildren().get(0)).getText());
+            int exId =  Integer.parseInt(((Label) hBox.getChildren().getFirst()).getText());
             ExtensionRule extensionRule = extensionManager.getExtension(exId);
-            extensionManager.deleteExtension(extensionRule);
+            if (extensionRule != null) {
+                extensionManager.deleteExtension(extensionRule);
+            }
             extensionContainer.getChildren().remove(hBox);
             extensionManager.deleteExtensionHbox(hBox);
-            saveService.saveExtensions();
             if(addExtensionButton.isDisable()){
                 addExtensionButton.setDisable(false);
             }
@@ -132,6 +132,7 @@ public class OptionMenuController {
     }
 
     public void switchToMainMenu(ActionEvent event) throws IOException {
+        saveService.saveExtensions();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/elfwegos/dropezone/MainSceneView.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
