@@ -61,6 +61,10 @@ public class MainSceneController {
         directoryChooser.setTitle(directoryChooserTitle);
 
         File choosenFile = directoryChooser.showDialog(new Stage());
+        if(choosenFile == null){
+            logsManager.addLog(LogTypes.WARNING,"PLS CHOOSE A FILE");
+            return;
+        }
         String absoluteDirectoryPath = choosenFile.getAbsolutePath();
         if(absoluteDirectoryPath.isBlank()){
             logsManager.addLog(LogTypes.ERROR,"Please choose a folder to organize");
