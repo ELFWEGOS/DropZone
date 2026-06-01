@@ -4,6 +4,7 @@ import com.elfwegos.dropezone.App;
 import com.elfwegos.dropezone.models.Log;
 import com.elfwegos.dropezone.services.Directory;
 import com.elfwegos.dropezone.services.LogsManager;
+import com.elfwegos.dropezone.services.UpdateService;
 import com.elfwegos.dropezone.utils.LogTypes;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
@@ -31,12 +33,16 @@ public class MainSceneController {
     Button pathButton;
     @FXML
     TextArea logsTextArea;
+    @FXML
+    Label versionLabel;
 
     Directory directory;
     LogsManager logsManager = LogsManager.getInstance();
+    UpdateService updateService = UpdateService.getInstance();
 
     @FXML
     private void initialize() {
+        versionLabel.setText("version : "+updateService.getLocalVersion());
         logsTextArea.setEditable(false);
         logsManager.getLogsList().addListener((javafx.collections.ListChangeListener<Log>) change -> {
             while (change.next()){

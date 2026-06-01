@@ -4,6 +4,7 @@ import com.elfwegos.dropezone.models.ExtensionRule;
 import com.elfwegos.dropezone.services.ExtensionManager;
 import com.elfwegos.dropezone.services.LogsManager;
 import com.elfwegos.dropezone.services.SaveService;
+import com.elfwegos.dropezone.services.UpdateService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,14 +32,18 @@ public class OptionMenuController {
     private TextField folderCreationTextField;
     @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private Label versionLabel;
 
     ExtensionManager extensionManager = ExtensionManager.getInstance();
     SaveService saveService = SaveService.getInstance();
+    UpdateService updateService = UpdateService.getInstance();
 
     ChoiceBox currentChoiceBox;
 
     @FXML
     private void initialize() {
+        versionLabel.setText("version : "+updateService.getLocalVersion());
         loadHBox();
         configureFolderNamesListner();
     }
@@ -118,13 +123,11 @@ public class OptionMenuController {
     }
     public void configureFolderNamesListner(){
         extensionManager.getDirectoryNamesForController().addListener((javafx.collections.ListChangeListener<String>) change -> {
-            ArrayList<HBox> hBoxes = extensionManager.getExtensionRulesHbox();
             while(change.next()){
                 if (change.wasAdded()){
                     if (currentChoiceBox == null){return;}
                     for(String folderName : change.getAddedSubList()){
                         currentChoiceBox.getItems().add(folderName);
-                        System.out.println(currentChoiceBox.getItems());
                     }
                 }
             }

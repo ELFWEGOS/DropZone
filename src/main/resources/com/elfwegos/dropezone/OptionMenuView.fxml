@@ -17,9 +17,6 @@
          </font>
       </Label>
    </top>
-   <bottom>
-      <Button mnemonicParsing="false" onAction="#switchToMainMenu" text="Save" BorderPane.alignment="CENTER" />
-   </bottom>
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -42,4 +39,12 @@
          </children>
       </AnchorPane>
    </center>
+   <bottom>
+      <AnchorPane prefHeight="29.0" prefWidth="767.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button layoutX="363.0" layoutY="3.0" mnemonicParsing="false" onAction="#switchToMainMenu" text="Save" />
+            <Label fx:id="versionLabel" layoutX="14.0" layoutY="6.0" text="version : x.x" textFill="#0f00ff" />
+         </children>
+      </AnchorPane>
+   </bottom>
 </BorderPane>
