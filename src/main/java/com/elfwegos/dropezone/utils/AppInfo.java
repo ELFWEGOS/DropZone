@@ -1,7 +1,7 @@
 package com.elfwegos.dropezone.utils;
 
 public class AppInfo {
-    String version = "1.0";
+    String version = "0.1";
 
     public String getVersion() {
         return version;
