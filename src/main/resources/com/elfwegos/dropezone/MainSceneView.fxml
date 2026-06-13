@@ -35,7 +35,7 @@
       </AnchorPane>
    </center>
    <top>
-      <Label text="DROPE ZONE" textFill="RED" BorderPane.alignment="CENTER">
+      <Label text="DROP ZONE" textFill="RED" BorderPane.alignment="CENTER">
          <font>
             <Font name="Arial Black" size="72.0" />
          </font>
